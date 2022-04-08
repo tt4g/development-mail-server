@@ -1,0 +1,23 @@
+[tool.mypy]
+python_version = "3.7"
+files = [
+    "module1/**/*.py",
+    "tests/**/*.py"
+]
+
+[tool.black]
+line-length = 88
+target-version = ["py37"]
+include = '\.pyi?$'
+
+[tool.isort]
+py_version = 3
+# Set `profile = "black"` for `black` compatibility.
+# See: https://pycqa.github.io/isort/docs/configuration/black_compatibility.html
+profile = "black"
+src_paths = [
+    "scripts",
+    "tests"
+]
+skip_gitignore = true
+known_local_folder = ["scripts"]

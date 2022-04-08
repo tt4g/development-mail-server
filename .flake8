@@ -1,0 +1,25 @@
+[flake8]
+# ignore =
+exclude =
+    .git,
+    env,
+    .env,
+    venv,
+    .venv,
+    .pytest_cache,
+    .mypy_cache,
+    .*/**, # And other `.` start files/directories.
+    __pycache__
+# `black` integration.
+# See: https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#flake8
+# > In some cases, as determined by PEP 8, Black will enforce an equal amount of
+# > whitespace around slice operators. Due to this, Flake8 will raise
+# > `E203 whitespace before ':'` warnings. Since this warning is not PEP 8
+# > compliant, Flake8 should be configured to ignore it via `extend-ignore = E203`.
+#
+# > Also, as like with isort, flake8 should be configured to allow lines up to
+# > the length limit of 88, Black’s default. This explains `max-line-length = 88`.
+max-line-length = 88
+extend-ignore = E203
+max-complexity = 10
+application_import_names = scripts

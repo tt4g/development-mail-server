@@ -1,0 +1,49 @@
+version: "3.6"
+
+x-logging: &X_LOGGING
+  driver: json-file
+  options:
+    max-file: "3"
+    max-size: "3m"
+
+x-unlimited-ulimits: &X_UNLIMITED_ULIMITS
+  memlock:
+    soft: -1
+    hard: -1
+
+services:
+  development-mail-server:
+    image: development-mail-server:0.0.1
+    container_name: development-mail-server
+    hostname: development-mail-server
+    domainname: example.com
+    build:
+      context: ./docker-image/mail-server
+      dockerfile: Dockerfile
+    volumes:
+      - type: bind
+        source: ./docker-data/mail-server/mail-data/
+        target: /var/mail/
+        # Windows 環境では `/var/mail-state/` のマウントはコメントアウトする。
+      - type: bind
+        source: ./docker-data/mail-server/mail-state/
+        target: /var/mail-state/
+      - type: bind
+        source: ./docker-data/mail-server/mail-logs/
+        target: /var/log/mail/
+      - type: bind
+        source: ./docker-data/mail-server/config/
+        target: /tmp/docker-mailserver/
+    env_file: ./development-mail-server.env
+    networks:
+      - development-mail-server-network
+    ports:
+      - "25:25"
+      - "110:110"
+    logging: *X_LOGGING
+    ulimits: *X_UNLIMITED_ULIMITS
+
+networks:
+  development-mail-server-network:
+    name: development-mail-server-network
+    driver: bridge

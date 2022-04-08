@@ -1,0 +1,11 @@
+# Override settings in `/etc/postfix/main.cf`.
+# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/advanced/override-defaults/postfix/
+#
+# ここに記載した設定は `/etc/postfix/main.cf` にマージされる。
+
+# ローカル配送で宛先不明の場合はローカルの `catchall` アカウントに送る。
+luser_relay = catchall
+
+# 配送設定を可能にする。
+# See: https://github.com/docker-mailserver/docker-mailserver/issues/254#issuecomment-521184784
+transport_maps = pcre:/tmp/docker-mailserver/postfix-transport_maps

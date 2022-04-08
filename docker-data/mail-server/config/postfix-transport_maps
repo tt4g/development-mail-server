@@ -1,0 +1,2 @@
+# `development-virtual.example.com` 以外の配送を local 配送にする。
+/.+@(?!development-virtual\.example\.com$).*$/ local

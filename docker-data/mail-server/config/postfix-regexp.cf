@@ -1,0 +1,2 @@
+# This file copy to `/etc/postfix/regexp` in docker-mailserver container.
+# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/

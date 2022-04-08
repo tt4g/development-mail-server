@@ -1,0 +1,3 @@
+foo@development-virtual.example.com|{SHA512-CRYPT}$6$cJ9p/A6J./ZrJveh$B59ie7f6j5AAeFHj9ASOClF61lEiMh//UA3l7tOKw0EUIK4ugOBQiGShbFeBaNKeU2ceuCk1V5wWkIBxOmD6F0
+bar@development-virtual.example.com|{SHA512-CRYPT}$6$UOc6Py1JM.5/HCDe$LKnIbx3hgIzTBVt.LT/HRhJSTpvxnjbJfuKECtWmsDCoAW3lKDRTtHTKQSKR0MOr1ApAsZmZPEGfU8b5SQ5ZZ.
+baz@development-virtual.example.com|{SHA512-CRYPT}$6$n0zcyvBym9z9igZg$cc27z.5/AGH0Dt8IUd9kCbHfOH6oUd/jx6vFrxCo1c/CuT5iBveYWcnOUHrfpzLO62jgv.WkWSzqhnBbW9OmY.
