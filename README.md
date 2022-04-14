@@ -9,11 +9,13 @@
 [docker-mailserver][docker-mailserver GitHub] の Docker コンテナ内で起動している
 `postfix` で SMTP プロトコルを処理し `dovecot` で POP3/IMAP プロトコルを処理する。
 
+#### バーチャルドメイン管理
+
 [development-mail-server.env](./development-mail-server.env) で環境変数
 `ENABLE_POSTFIX_VIRTUAL_TRANSPORT=1` が定義されているため、 バーチャルドメインが有効に
 なっている。
 
-[development-mail-server.env](./development-mail-server.env) の機能によって
+[docker-mailserver][docker-mailserver GitHub] の機能によって
 `setup email add` コマンドで追加されたメールアドレスに対して `dovecot` が管理する
 メールボックスが生成されるようになっている。
 バーチャルドメインとメールボックスの関連も `virtual_mailbox_maps` が参照するファイルにも
@@ -23,6 +25,8 @@
 `postfix` は `virtual_mailbox_maps` で定義されているバーチャルドメイン宛のメールを
 `dovecot` の LMTP サーバーに渡して `dovecot` が管理するメールボックスに配送する。
 
+#### 外部配送を防ぐ仕組み
+
 Docker コンテナ内から配送する際には
 [docker-data/mail-server/config/postfix-transport_maps](./docker-data/mail-server/config/postfix-transport_maps)
 に記載されているトランスポート設定によって、メールドメイン
@@ -31,22 +35,30 @@ Docker コンテナ内から配送する際には
 
 宛先不明のローカル配送メールは
 [docker-data/mail-server/config/postfix-main.cf](./docker-data/mail-server/config/postfix-main.cf)
-の `luser_relay = catchall` 設定によって `catchall` アカウントに配送される。
+の `luser_relay = catchall` 設定によってローカルのメールアカウント `catchall` が
+配送先になる。その後、
+[docker-data/mail-server/config/postfix-aliases.cf](./docker-data/mail-server/config/postfix-aliases.cf)
+の `catchall: catchall@development-virtual.example.com` 設定によって
+バーチャルドメインの `catchall@development-virtual.example.com` にメールが配送される。
 
-**TIP:** `development-virtual.example.com` はローカル配送にならないため、
+**TIP:** `development-virtual.example.com` はバーチャルドメインなので
 バーチャルドメインのトランスポートマップで配送先が解決される。
-バーチャルドメインにアカウントが存在しない場合は宛先不明で配送に失敗する。
+バーチャルドメインへの配送は `luser_relay` でカバーされないため、
+`development-virtual.example.com` ドメインの存在しないアカウント宛てにメールを送信すると
+宛先不明で配送に失敗する。
 
-ローカル開発中は `development-virtual.example.com` をメールドメインとする
-メールアカウントを追加することで、 Docker コンテナ内のメールサーバーに対する SMTP/POP3
-プロトコルによるメール交換が実現できる。
+**NOTE:** ローカルアカウントに `catchall` は実在しないため、 `aliases` 設定を削除すると
+宛先不明で配送に失敗するようになる。
+
+開発中は `development-virtual.example.com` をメールドメインとするメールアカウントを
+追加することで、 Docker コンテナ内のメールサーバーに対する SMTP/POP3 プロトコルによる
+メール交換を実現できる。
 
 ### 作成済みアカウント
 
-- `catchall@development-mail-server.example.com`
+- `catchall@development-virtual.example.com`
 
-    Docker コンテナ内のローカルユーザーのアカウント。
-    他のローカルアカウントに配送されなかったメールの配送先メールアカウント。
+    バーチャルドメインで定義されている catchall メールアカウント。
     パスワードは `catchall` が設定されている。
 
 - `foo@development-virtual.example.com`

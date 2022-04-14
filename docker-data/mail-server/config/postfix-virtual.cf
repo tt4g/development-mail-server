@@ -1,2 +1,9 @@
-# This file copy to `/etc/postfix/virtual` in docker-mailserver container.
-# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/
+# Define `/etc/postfix/virtual`.
+#
+# postfix の `virtual_alias_maps` に
+# `virtual_alias_maps = texthash:/etc/postfix/virtual` 形式で参照される:
+# https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/target/postfix/main.cf#L85
+#
+# See:
+#  - https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/
+#  - https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/docs/content/faq.md#how-can-i-delete-all-the-emails-for-a-specific-user

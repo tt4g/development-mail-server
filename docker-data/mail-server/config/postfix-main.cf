@@ -1,9 +1,10 @@
-# Override settings in `/etc/postfix/main.cf`.
-# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/advanced/override-defaults/postfix/
+# Override (merge) postfix settings `/etc/postfix/main.cf`.
 #
-# ここに記載した設定は `/etc/postfix/main.cf` にマージされる。
+# `[a-z]` で始まる行は `postconf -e` コマンドに渡されたて postfix の設定の上書きに利用される:
+# https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/target/scripts/startup/setup-stack.sh#L810-L824
+#
+# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/advanced/override-defaults/postfix/
 
-# ローカル配送で宛先不明の場合はローカルの `catchall` アカウントに送る。
 luser_relay = catchall
 
 # 配送設定を可能にする。

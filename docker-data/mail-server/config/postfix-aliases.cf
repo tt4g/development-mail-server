@@ -1,0 +1,12 @@
+# Define `/etc/aliases`.
+#
+# postfix の `alias_maps`, `alias_database` の参照先:
+# https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/target/postfix/main.cf#L10-L11
+#
+# See:
+#  - https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/
+#  - https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/docs/content/faq.md#how-can-i-delete-all-the-emails-for-a-specific-user
+
+# ローカルの catchall アカウント宛ての配送を
+# `catchall@development-virtual.example.com` 宛てに変更する。
+catchall: catchall@development-virtual.example.com

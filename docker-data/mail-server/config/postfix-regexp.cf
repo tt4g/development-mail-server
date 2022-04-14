@@ -1,2 +1,9 @@
-# This file copy to `/etc/postfix/regexp` in docker-mailserver container.
-# See: https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/
+# Define `/etc/postfix/regexp`.
+#
+# postfix の `virtual_alias_maps` に
+# `virtual_alias_maps = pcre:/etc/postfix/regexp` 形式で指定される:
+# https://github.com/docker-mailserver/docker-mailserver/blob/v10.5.0/target/scripts/helpers/aliases.sh#L41-L53
+#
+# See:
+#  - https://docker-mailserver.github.io/docker-mailserver/v10.5/config/user-management/aliases/
+#  - https://github.com/docker-mailserver/docker-mailserver/blob/b9fdb1e7b5377770965d40a15905c9f11a214d2e0/docs/content/faq.md#how-can-i-delete-all-the-emails-for-a-specific-user
