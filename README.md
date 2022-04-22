@@ -153,7 +153,8 @@ Requirements Python 3.7+
 
 ```bash
 $ python -m venv venv
-$ . venv/Scripts/activate
+# Windows: $ venv/Scripts/activate.bat
+$ . venv/bin/activate
 $ python -m pip install pip-tools
 $ pip-sync requirements.txt requirements-dev.txt
 ```
