@@ -161,18 +161,18 @@ $ pip-sync requirements.txt requirements-dev.txt
 
 ### send_email.py
 
-[scripts/send_email.py](./scripts/send_email.py) で SMTP プロトコルでメールを配信できる。
+[send_email.py](send_email.py) で SMTP プロトコルでメールを配信できる。
 
 ```shell
-$ python scripts/send_email.py
+$ python send_email.py
 ```
 
 ### pop_email.py
 
-[scripts/pop_email.py](./scripts/pop_email.py) で POP プロトコルでメールを受信できる。
+[pop_email.py](pop_email.py) で POP プロトコルでメールを受信できる。
 
 ```shell
-$ python scripts/pop_email.py
+$ python pop_email.py
 ```
 
 [docker-mailserver GitHub]:https://github.com/docker-mailserver/docker-mailserver
