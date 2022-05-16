@@ -1,15 +1,24 @@
-import email
 import poplib
+from email import message_from_bytes
+from email.header import decode_header
 
 
-def decode_header(header):
-    decoded = email.header.decode_header(header)
+def _decode_email_header(header):
+    decoded = decode_header(header)
     value = r""
     for decoded_bytes, charset in decoded:
-        if charset is None:
-            value += decoded_bytes.decode()
-        else:
-            value += decoded_bytes.decode(charset)
+        # `email.header.decode_header` は電子メールのヘッダー行の先頭と末尾の
+        # 空白文字は削除する。しかし RFC 2822 にある「CRLF を除いて78文字」としたほうが良い
+        # というルールに基づいて 78行目から CRLF で改行して複数行で1つのヘッダー値を
+        # 記述しているような時は「次の行にヘッダー値が続く場合は末尾の改行コードを無視する」という
+        # ルールに基づいて改行文字を削除してくれない。ヘッダー行に改行が出現するとは
+        # 考えられないので、改行コードは RFC 2822 のヘッダー値を複数行に記載するためのもので
+        # あるとみなして削除する。
+        for decoded_byte_line in decoded_bytes.splitlines():
+            if charset is None:
+                value += decoded_byte_line.decode()
+            else:
+                value += decoded_byte_line.decode(charset)
 
     return value
 
@@ -31,14 +40,14 @@ try:
     for message_index in range(1, message_count + 1):
         # `poplib.POP3.retr` returns `(response, [line, ...], octets)``
         lines = mail_box.retr(message_index)[1]
-        raw_email = b"\n".join(lines)
-        parsed_email = email.message_from_bytes(raw_email)
+        raw_email = b"\r\n".join(lines)
+        parsed_email = message_from_bytes(raw_email)
         print(r"email:", message_index)
         print(email_separator)
-        print(r"From:", decode_header(parsed_email[r"From"]))
-        print(r"To:", decode_header(parsed_email[r"To"]))
+        print(r"From:", _decode_email_header(parsed_email[r"From"]))
+        print(r"To:", _decode_email_header(parsed_email[r"To"]))
         print(r"Date:", parsed_email[r"Date"])
-        print(r"Subject:", decode_header(parsed_email[r"Subject"]))
+        print(r"Subject:", _decode_email_header(parsed_email[r"Subject"]))
         for part in parsed_email.walk():
             if part.is_multipart():
                 continue
