@@ -24,8 +24,11 @@ try:
 
     email_separator = r"-" * 80
 
-    # Reverse order access `range(message_count, 0, -1)`.
-    for message_index in range(message_count, 0, -1):
+    # POP3 のメッセージ番号 (message-numbers) は `1` 始まりなので `1`からメッセージ数まで
+    # ループする。
+    # メッセージ番号が小さい値ほど古いメッセージなので `range(1, message_count + 1)` で
+    # 古いメッセージを最初に取得する。
+    for message_index in range(1, message_count + 1):
         # `poplib.POP3.retr` returns `(response, [line, ...], octets)``
         lines = mail_box.retr(message_index)[1]
         raw_email = b"\n".join(lines)
