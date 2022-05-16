@@ -51,10 +51,7 @@ try:
         for part in parsed_email.walk():
             if part.is_multipart():
                 continue
-            elif (
-                part.get_content_maintype() == r"text"
-                and part.get_content_subtype() == r"plain"
-            ):
+            elif part.get_content_type() == r"text/plain":
                 text: bytes = part.get_payload(
                     decode=True
                 )  # .decode(part.get_content_charset())
