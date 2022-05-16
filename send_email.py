@@ -2,7 +2,9 @@ import smtplib
 from dataclasses import dataclass
 from datetime import datetime
 from email.header import Header
-from email.message import EmailMessage
+from email.message import Message
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from typing import Collection, Iterable, NoReturn, Optional
 
 from email_test._email import (
@@ -105,9 +107,24 @@ def convert_send_mime_email(send_email: SendEmail) -> SendMimeEmail:
     )
 
 
-def convert_email_message(send_mime_email: SendMimeEmail) -> EmailMessage:
+def convert_email_message(send_mime_email: SendMimeEmail) -> Message:
+    def _create_message(part: Collection[MimeEmailBody]) -> Message:
+        part_len = len(part)
+        if part_len == 0:
+            # create empty `text/plain`.
+            return MIMEText(r"", r"plain")
+        elif part_len == 1:
+            return next(iter(part)).encoded_content()
+
+        #  create `multipart/alternative`.
+        message = MIMEMultipart(r"alternative")
+        for p in part:
+            message.attach(p.encoded_content())
+
+        return message
+
     def _set_recipient_header(
-        message: EmailMessage,
+        message: Message,
         name: str,
         mime_email_addresses: Collection[MimeEmailAddress],
     ) -> None:
@@ -118,21 +135,13 @@ def convert_email_message(send_mime_email: SendMimeEmail) -> EmailMessage:
         message.add_header(name, value)
 
     def _set_headers(
-        message: EmailMessage, headers: Collection[MimeEmailHeader]
+        message: Message, headers: Collection[MimeEmailHeader]
     ) -> None:
         for header in headers:
             converted: Header = header.to_header()
             message.add_header(header.get_name(), converted.encode())
 
-    def _set_body_part(message: EmailMessage, part: Collection[MimeEmailBody]) -> None:
-        if len(part) == 1:
-            message.set_content(next(iter(part)).encoded_content())
-            return
-
-        for p in part:
-            message.add_alternative(p.encoded_content())
-
-    message = EmailMessage()
+    message = _create_message(part=send_mime_email.part)
     message[r"From"] = send_mime_email.sender_from.to_formatted().value
     _set_recipient_header(
         message=message, name=r"To", mime_email_addresses=send_mime_email.to
@@ -144,7 +153,6 @@ def convert_email_message(send_mime_email: SendMimeEmail) -> EmailMessage:
         message=message, name=r"Bcc", mime_email_addresses=send_mime_email.bcc
     )
     _set_headers(message=message, headers=send_mime_email.headers)
-    _set_body_part(message=message, part=send_mime_email.part)
 
     return message
 
